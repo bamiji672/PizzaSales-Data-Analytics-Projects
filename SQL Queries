@@ -1,0 +1,4 @@
+1. Total Number of Pizza Sold
+
+  Select sum (quantity) as Total_NumberofPizza_Sold from dbo.pizza_sales
+2. 
