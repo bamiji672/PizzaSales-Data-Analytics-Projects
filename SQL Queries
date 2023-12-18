@@ -1,56 +1,75 @@
 1. Total Number of Pizza Sold
-
         Select sum (quantity) as Total_NumberofPizza_Sold from dbo.pizza_sales
 
 2. Total Orders
-
         Select count(distinct order_id) as Total_Orders from pizza_sales
 
 3. Average Order Value - This shows the average price of each order from the Pizza shop.
-
         Select sum (total_price)/count (order_id) as Avg_Order_Value from pizza_sales 
-4. Average Number of Pizza Per Order 
 
+4. Average Number of Pizza Per Order 
         Select cast (cast (sum (quantity) as decimal (10,2))/
         cast (count (distinct (order_id)) as decimal (10,2)) as decimal(10,2)) as Avg_Pizza_PerOrder from pizza_sales
 
 5. Total Pizza Sold By Pizza Category
-
         Select pizza_category as Pizza_Type, 
         count (quantity) as 'Total Pizza Sold'
-        from 
-        	pizza_sales
-        group by 
-        	pizza_category
-        order by [Total Pizza Sold] desc
-6. Total Pizza Sold By Pizza Category
-
--- 1. Select the pizza category column 
-        Select pizza_category as Pizza_Type,
--- 2. Get the count of quantity of pizza sold 
-        count (quantity) as 'Total Pizza Sold,
         from pizza_sales
-
--- 3. Group the result by pizza category
         group by pizza_category
--- 4. Order by Total Pizza Sold column in descending order
+        order by [Total Pizza Sold] desc
+
+6. Total Pizza Sold By Pizza Category
+        Select pizza_category as Pizza_Type,
+        count (quantity) as 'Total Pizza Sold
+        from pizza_sales
+        group by pizza_category
         order by [Total Pizza Sold] desc 
- 
+7. Total Sales Revenue 
+	Select sum (total_price) as Total_Revenue from dbo.pizza_sales
 
+8. Percentage of Sales By Pizza Category
+	Select pizza_category as Pizza_Type, 
+	cast (sum (total_price) as decimal (10,2)) as Total_Sales,
+	cast(sum(total_price)*100/ (select sum (total_price) from pizza_sales) as decimal (10,2)) as Percentage 
+	from pizza_sales
+	group by pizza_category
+9. Percenatage of Sales By Pizza Size
+	Select pizza_size as Pizza_Type, 
+	cast (sum (total_price) as decimal (10,2)) as Total_Sales,
+	cast(sum(total_price)*100/ (select sum (total_price) from pizza_sales) as decimal (10,2)) as Percentage 
+	from pizza_sales
+	group by pizza_size
 
+10. Top 5 Best Selling Pizza
+	Select top (5) pizza_name as Pizza_Type, 
+	count (quantity) as 'Total Pizza Sold'
+	from pizza_sales
+	group by pizza_name
+	order by [Total Pizza Sold] desc
 
+11. Top 5 Worst Selling Pizza
+	Select top (5) pizza_name as Pizza_Type, 
+	count (quantity) as 'Total Pizza Sold'
+	from pizza_sales
+	group by pizza_name
+	order by [Total Pizza Sold] asc
 
+12. Daily Trend Of Pizza Orders
+	Select DATENAME (DW, order_date) as Order_Day, 
+	count (distinct (order_id)) as Total_Order from dbo.pizza_sales
+	Group By DATENAME (DW, order_date)
+	order by Order_Day asc
+		-- DW = Day of the week
 
-5. Hourly Sales Trend
-
-Select 
-	CASE 
-        When DATEPART(hour, order_time) = 12 THEN '12 Noon'
-		WHEN DATEPART(hour, order_time) < 12 THEN CONVERT(varchar(2), DATEPART(hour, order_time)) + ' AM'
-        else CONVERT(varchar(2), DATEPART(hour, order_time) - 12) + ' PM'
-    END AS Order_Hours,
-    COUNT(DISTINCT order_id) AS Total_Orders
-FROM pizza_sales
-GROUP BY DATEPART(hour, order_time)
-ORDER BY DATEPART(hour, order_time) ASC
+13. Hourly Sales Trend
+	Select 
+		CASE 
+	        When DATEPART(hour, order_time) = 12 THEN '12 Noon'
+			WHEN DATEPART(hour, order_time) < 12 THEN CONVERT(varchar(2), DATEPART(hour, order_time)) + ' AM'
+	        else CONVERT(varchar(2), DATEPART(hour, order_time) - 12) + ' PM'
+	    END AS Order_Hours,
+	    COUNT(DISTINCT order_id) AS Total_Orders
+	FROM pizza_sales
+	GROUP BY DATEPART(hour, order_time)
+	ORDER BY DATEPART(hour, order_time) ASC
 
