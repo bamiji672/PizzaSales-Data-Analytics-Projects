@@ -12,6 +12,7 @@
         cast (count (distinct (order_id)) as decimal (10,2)) as decimal(10,2)) as Avg_Pizza_PerOrder from pizza_sales
 
 5. Total Pizza Sold By Pizza Category
+
         Select pizza_category as Pizza_Type, 
         count (quantity) as 'Total Pizza Sold'
         from pizza_sales
